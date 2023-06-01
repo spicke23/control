@@ -38,7 +38,7 @@ pipeline {
         stage('Sonar Scanner') {
             steps {
                 script {
-                    withSonarQubeEnv('sonar') { // Reemplaza 'My SonarQube Server' con el nombre de tu configuración de servidor SonarQube en Jenkins
+                    withSonarQubeEnv('SonarQube') { // Reemplaza 'My SonarQube Server' con el nombre de tu configuración de servidor SonarQube en Jenkins
                         sh 'mvn sonar:sonar -Dsonar.projectKey=GS -Dsonar.sources=src/main/java/com/kibernumacademy/miapp -Dsonar.tests=src/test/java/com/kibernumacademy/miapp -Dsonar.java.binaries=.'
                     }
                 }
