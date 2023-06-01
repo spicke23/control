@@ -36,22 +36,21 @@ pipeline {
         }
 
         stage('Sonar Scanner') {
-        steps {
-            script {
-                def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-                    sh "${sonarqubeScannerHome}/bin/sonar-scanner -e -Dsonar.host.url=http://SonarQube:9000 -Dsonar.login=${sonarLogin} -Dsonar.projectName=mv-maven -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=src/main/java/com/kibernumacademy/miapp -Dsonar.tests=src/test/java/com/kibernumacademy/miapp -Dsonar.language=java -Dsonar.java.binaries=."
+            steps {
+                script {
+                    withSonarQubeEnv('sonar') { // Reemplaza 'My SonarQube Server' con el nombre de tu configuración de servidor SonarQube en Jenkins
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=GS -Dsonar.sources=src/main/java/com/kibernumacademy/miapp -Dsonar.tests=src/test/java/com/kibernumacademy/miapp -Dsonar.java.binaries=.'
+                    }
                 }
             }
         }
-    
-    }
+
         stage('Quality Gate'){
-                steps{
-                    timeout(time:1, unit:'HOURS'){
-                        waitForQualityGate abortPipeline:true
-                        }
-                    }
+            steps{
+                timeout(time:1, unit:'HOURS'){
+                    waitForQualityGate abortPipeline:true
+                }
+            }
         }
 
     }
